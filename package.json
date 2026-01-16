@@ -1,0 +1,11 @@
+{
+  "name": "uploader",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "commit": "bash scripts/commit.sh"
+  },
+  "author": "",
+  "license": "ISC"
+}
