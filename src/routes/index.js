@@ -11,8 +11,11 @@ const paths = {
     // DOCUMENTS
     "create",
     "confirm"
+  ],
+  project: [
+    // PROJECTS
+    "create"
   ]
-  // project: []
 }
 
 const routes = requires(paths).flat()
