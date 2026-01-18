@@ -5,10 +5,10 @@ const compression = require("compression")
 const bodyParser = require("body-parser")
 const cookieSession = require("cookie-session")
 const cookieParser = require("cookie-parser")
-const { isError } = require("test_swe_common")
+const { isError, NotFoundError } = require("test_swe_common")
 
 // IMPORT ROUTES
-// TODO const routes = require("./routes")
+const routes = require("./routes")
 
 // LAUNCH EXPRESS
 const app = express()
@@ -27,8 +27,10 @@ app.use(compression())
 // USE ROUTES
 app.get("/", (_, res) => res.status(200).send("Uploader"))
 app.get("/healthz.js", (_, res) => res.status(200).send("Healthz Check"))
-// TODO routes.map(route => app.use("/", route))
-
+routes.map(route => app.use("/", route))
+app.all("*", async () => {
+  throw new NotFoundError()
+})
 // USE CUSTOM MIDDLWWARE
 app.use(isError)
 

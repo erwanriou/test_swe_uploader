@@ -24,7 +24,7 @@
     "mongoose": "8.10.0",
     "nats": "2.29.3",
     "nodemon": "3.1.11",
-    "test_swe_common": "1.0.8"
+    "test_swe_common": "1.0.10"
   },
   "devDependencies": {
     "jest": "29.4.2",
