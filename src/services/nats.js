@@ -1,22 +1,25 @@
 const { NatsWrapper } = require("./natsWrapper")
+const { Subject } = require("test_swe_common")
+
 const events = require("../events/listeners")
+
+function getAllSubjects() {
+  return Array.from(new Set(Object.values(Subject).filter(Boolean))).sort()
+}
 
 async function ensureStream(nc, streamName = "EVENTS") {
   const jsm = await nc.jetstreamManager()
+  const subjects = getAllSubjects()
 
   try {
-    await jsm.streams.info(streamName)
+    const info = await jsm.streams.info(streamName)
+    await jsm.streams.update(streamName, { ...info.config, subjects })
+    console.log(`Stream ensured (updated): ${streamName}`)
     return
-  } catch (e) {}
-
-  await jsm.streams.add({
-    name: streamName,
-    subjects: ["events.>"],
-    retention: "limits",
-    storage: "file"
-  })
-
-  console.log(`Uploader JetStream stream ensured: ${streamName}`)
+  } catch (e) {
+    await jsm.streams.add({ name: streamName, subjects, retention: "limits", storage: "file" })
+    console.log(`Stream ensured (created): ${streamName}`)
+  }
 }
 
 module.exports = async () => {
