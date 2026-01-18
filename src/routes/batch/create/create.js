@@ -2,7 +2,7 @@ const express = require("express")
 const db = require("mongoose")
 
 // DATABASE AND LIBRARIES
-const { Import, DatabaseConnectionError } = require("test_swe_common")
+const { Import, BadRequestError, DatabaseConnectionError } = require("test_swe_common")
 const Batch = Import("Batch", "uploader")
 
 // EVENTS
@@ -15,9 +15,12 @@ const router = express.Router()
 // @desc   Create a batch upload request
 // @access Private
 router.post("/api/uploader/batch/create/:projectId", async (req, res) => {
-  // TODO VALIDATION
   const { projectId } = req.params
   const { userId, expectedFiles } = req.body
+
+  // SIMPLE VALIDATION
+  if (!projectId || !userId) throw new BadRequestError("projectId/userId missing")
+  if (!expectedFiles) throw new BadRequestError("expectedFiles missing")
 
   // DEFINE FIELDS
   const batchFields = {
