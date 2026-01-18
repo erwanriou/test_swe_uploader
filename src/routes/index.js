@@ -6,11 +6,11 @@ const paths = {
   batch: [
     // BATCHS
     "create"
-    // "update"
   ],
   document: [
     // DOCUMENTS
-    "create"
+    "create",
+    "confirm"
   ]
   // project: []
 }
