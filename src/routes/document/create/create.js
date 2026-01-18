@@ -54,14 +54,6 @@ router.post("/api/uploader/document/create/:batchId", async (req, res) => {
   // GENERATE SIGNED URL
   try {
     const signedUrlOptions = { version: "v4", action: "write", expires: Date.now() + 15 * 60 * 1000, contentType }
-    await storage.bucket(process.env.GOOGLE_STORAGE_BUCKET).setCorsConfiguration([
-      {
-        origin: [`https://${req.headers["host"]}`],
-        responseHeader: ["Content-Type", "Access-Control-Allow-Origin", "X-Requested-With", "x-goog-resumable"],
-        method: ["PUT", "POST"],
-        maxAgeSeconds: 3600
-      }
-    ])
     signedUrl = await storage.bucket(process.env.GOOGLE_STORAGE_BUCKET).file(key).getSignedUrl(signedUrlOptions)
   } catch (err) {
     throw new BadRequestError(`The creation of the prefetched url failed: ${err}`)
@@ -89,3 +81,5 @@ router.post("/api/uploader/document/create/:batchId", async (req, res) => {
     SESSION.endSession()
   }
 })
+
+module.exports = router

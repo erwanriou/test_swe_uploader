@@ -7,8 +7,11 @@ const paths = {
     // BATCHS
     "create"
     // "update"
+  ],
+  document: [
+    // DOCUMENTS
+    "create"
   ]
-  // document: [],
   // project: []
 }
 
