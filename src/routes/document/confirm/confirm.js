@@ -13,6 +13,7 @@ const { storage } = require("../../../services/googleStorage")
 const { NatsWrapper } = require("../../../services/natsWrapper")
 const { DocumentUpdatedPub } = require("../../../events/publishers/documentUpdatedPub")
 const { BatchUpdatedPub } = require("../../../events/publishers/batchUpdatedPub")
+const { BatchNotifiedPub } = require("../../../events/publishers/batchNotifiedPub")
 
 const router = express.Router()
 
@@ -71,6 +72,7 @@ router.post("/api/uploader/document/confirm/:documentId", async (req, res) => {
     if (batch.totals.receivedFiles >= batch.totals.expectedFiles) {
       await batch.set({ status: "FINALIZING" }).save()
       await new BatchUpdatedPub(NatsWrapper).publish(batch)
+      await new BatchNotifiedPub(NatsWrapper).publish({ batch, message: "BATCH_UPLOADED" })
     }
 
     await SESSION.commitTransaction()
