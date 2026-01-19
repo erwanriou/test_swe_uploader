@@ -5,6 +5,10 @@ const db = require("mongoose")
 const { Import, BadRequestError, DatabaseConnectionError } = require("test_swe_common")
 const Project = Import("Project", "uploader")
 
+// IMPORT EVENTS
+const { NatsWrapper } = require("../../../services/natsWrapper")
+const { ProjectCreatedPub } = require("../../../events/publishers/projectCreatedPub")
+
 const router = express.Router()
 
 // @route  POST /api/uploader/project/create
@@ -25,6 +29,7 @@ router.post("/api/uploader/project/create", async (req, res) => {
   try {
     SESSION.startTransaction()
     const project = await new Project(projectFields).save()
+    await new ProjectCreatedPub(NatsWrapper).publish(project)
     await SESSION.commitTransaction()
 
     return res.status(201).json({ success: true, project })
